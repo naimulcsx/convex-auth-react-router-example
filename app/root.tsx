@@ -6,8 +6,10 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-
+import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import type { Route } from "./+types/root";
+import { ConvexReactClient } from "convex/react";
+
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -23,6 +25,8 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -33,9 +37,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+        <ConvexAuthProvider client={convex}>
+          {children}
+          <ScrollRestoration />
+          <Scripts />
+        </ConvexAuthProvider>
       </body>
     </html>
   );
