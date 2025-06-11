@@ -11,7 +11,9 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { LogOut } from "lucide-react";
+import { Loader2, LogOut } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -22,6 +24,7 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   const { signOut } = useAuthActions();
+  const [isLoading, setIsLoading] = useState(false);
   const user = useQuery(api.auth.getCurrentUser);
 
   return (
@@ -38,9 +41,23 @@ export default function Home() {
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => signOut()}
+              onClick={() => {
+                setIsLoading(true);
+                signOut()
+                  .then(() => {
+                    toast.success("Signed out successfully");
+                  })
+                  .finally(() => {
+                    setIsLoading(false);
+                  });
+              }}
+              disabled={isLoading}
             >
-              <LogOut className="mr-2 h-4 w-4" />
+              {isLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <LogOut className="mr-2 h-4 w-4" />
+              )}
               Sign out
             </Button>
           </CardContent>

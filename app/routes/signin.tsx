@@ -14,6 +14,14 @@ import {
 import { Label } from "~/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import type { Route } from "./+types/signin";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Sign in" },
+    { name: "description", content: "Sign in to your account" },
+  ];
+}
 
 export default function SignIn() {
   const { signIn } = useAuthActions();
@@ -43,8 +51,10 @@ export default function SignIn() {
                 .catch((error) => {
                   toast.error("Invalid credentials");
                 })
-                .then(() => {
-                  toast.success("Signed in successfully");
+                .then((value) => {
+                  if (value) {
+                    toast.success("Signed in successfully");
+                  }
                 })
                 .finally(() => {
                   setIsLoading(false);
