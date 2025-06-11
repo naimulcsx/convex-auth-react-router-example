@@ -1,4 +1,6 @@
 import type { Route } from "./+types/home";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { ProtectedRoute } from "~/components/ProtectedRoute";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,5 +10,11 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <div>Home</div>;
+  const { signOut } = useAuthActions();
+  return (
+    <ProtectedRoute>
+      <div>Home</div>
+      <button onClick={() => signOut()}>Sign out</button>
+    </ProtectedRoute>
+  );
 }
